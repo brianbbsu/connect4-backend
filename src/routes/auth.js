@@ -30,7 +30,7 @@ router.post("/register", wrap(async (req, res, next) => {
         return next(BadRequest('Missing username or password field.'));
     const { username, password } = req.body;
     const usernameRegex = /^[a-zA-Z0-9-_]{1,32}$/;
-    const passwordMinLength = 8;
+    const passwordMinLength = 6;
     if (!usernameRegex.test(username))
         return next(UnprocessableEntity(`Username should match /${usernameRegex.source}/.`));
     if (password.length < passwordMinLength)
@@ -48,8 +48,16 @@ router.post("/register", wrap(async (req, res, next) => {
             throw Conflict(`User "${username}" already exists.`);
         throw err;
     });
+
+    // Login the user right away
+    const token = crypto.randomBytes(16).toString('hex');
+    await AuthToken.create({
+        token: token,
+        username: username,
+    });
     res.status(200).json({
         ok: true,
+        token: token,
     });
 }));
 
@@ -63,7 +71,7 @@ router.post("/login", wrap(async (req, res, next) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match)
         return next(Unauthorized(`Incorrect username or password.`));
-    const token = crypto.randomBytes(32).toString('hex');
+    const token = crypto.randomBytes(16).toString('hex');
     await AuthToken.create({
         token: token,
         username: username,
