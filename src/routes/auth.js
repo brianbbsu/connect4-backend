@@ -82,4 +82,4 @@ router.post("/logout", authRequired, wrap(async (req, res, next) => {
     });
 }));
 
-exports.userRouter = router;
+exports.authRouter = router;

@@ -1,7 +1,7 @@
 import express from 'express'
 import createError from 'http-errors'
 
-import { userRouter, authRequired } from './user'
+import { authRouter, authRequired } from './auth'
 
 /** @param {express.Express} app */
 export const applyRoute = (app) => {
@@ -19,7 +19,7 @@ export const applyRoute = (app) => {
         });
     });
 
-    app.use('/user', userRouter);
+    app.use('/auth', authRouter);
 
     // error message handling
     app.use((err, req, res, next) => {
