@@ -2,6 +2,8 @@ import express from 'express'
 import createError from 'http-errors'
 
 import { authRouter, authRequired } from './auth'
+import { usersRouter } from './users'
+import { gamesRouter } from './games'
 
 /** @param {express.Express} app */
 export const applyRoute = (app) => {
@@ -20,6 +22,8 @@ export const applyRoute = (app) => {
     });
 
     app.use('/auth', authRouter);
+    app.use('/users', usersRouter);
+    app.use('/games', gamesRouter);
 
     // error message handling
     app.use((err, req, res, next) => {

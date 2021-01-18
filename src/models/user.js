@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import _ from 'lodash'
 
 const Schema = mongoose.Schema;
 
@@ -12,7 +13,29 @@ const UserSchema = Schema({
         type: String,
         required: true,
     },
+    gameFinished: {
+        type: Number,
+        default: 0,
+    },
+    gameWon: {
+        type: Number,
+        default: 0,
+    },
+    gameTied: {
+        type: Number,
+        default: 0,
+    },
+    gameLost: {
+        type: Number,
+        default: 0,
+    },
+}, {
+    timestamps: true,
 });
+
+UserSchema.methods.toJSON = function() {
+    return _.pick(this, ["username", "createdAt", "gameFinished", "gameWon", "gameTied", "gameLost"]);
+}
 
 const User = mongoose.model("User", UserSchema);
 

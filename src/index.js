@@ -44,8 +44,9 @@ app.set('socketio', io); // currently no use
 mongoose.connect(config.mongo_url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
 });
-mongoose.set('useCreateIndex', true); // Fix deprecated warning
 const db = mongoose.connection;
 db.on('error', error => console.log(error));
 db.once('open', () => {
