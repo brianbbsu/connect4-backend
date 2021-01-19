@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import _ from 'lodash'
 
 import { autoIncrement } from "./utils";
+import User from "./user"
 
 const Schema = mongoose.Schema;
 
@@ -128,6 +129,19 @@ GameSchema.statics.makeMove = async function (gameId, username, move) {
             return false; // Race condition. This is not a valid move.
         console.log(err);
         return false;
+    }
+    if (game.status !== GAME_STATUS.ONGOING) {
+        // Update statistics
+        let doc1 = {}, doc2 = {};
+        doc1.gameFinished = 1; doc2.gameFinished = 1;
+        if (game.status === GAME_STATUS.PLAYER1_WINS)
+            doc1.gameWon = 1, doc2.gameLost = 1;
+        else if (game.status === GAME_STATUS.PLAYER2_WINS)
+            doc1.gameLost = 1, doc2.gameWon = 1;
+        else // TIE
+            doc1.gameTied = 1, doc2.gameTied = 1;
+        await User.updateOne({username: game.player1}, { $inc: doc1 });
+        await User.updateOne({username: game.player2}, { $inc: doc2 });
     }
     return game.status;
 }
