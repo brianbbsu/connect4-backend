@@ -27,7 +27,7 @@ export const applyJionNS = (ns: SocketIO.Namespace) => {
                         return callback({status:"Error", content:"Already waiting."});
                     // TODO: create new game
 
-                    queue.delete(skt)
+                    queue.delete(skt);
                 }
                 
             }
@@ -35,9 +35,19 @@ export const applyJionNS = (ns: SocketIO.Namespace) => {
         });
 
         socket.on('leave', () => {
-            if (socket.gameId !== undefined) {
-                socket.leave(socket.gameId);
-                delete socket.gameId;
+            if (socket.username !== undefined) {
+                for (let skt of queue) {
+                    if (skt.username == socket.username)
+                        queue.delete(skt);
+                }
+            }
+        });
+        socket.on("disconnet", ()=>{
+            if (socket.username !== undefined) {
+                for (let skt of queue) {
+                    if (skt.username == socket.username)
+                        queue.delete(skt);
+                }
             }
         });
     });
