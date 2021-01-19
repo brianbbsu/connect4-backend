@@ -11,6 +11,7 @@ import mongoose from 'mongoose'
 
 import config from "./config"
 import { applyRoute } from "./routes/"
+import { applySocket } from "./sockets/";
 
 const app = express();
 app.set('etag', false); // Prevent 304
@@ -34,11 +35,15 @@ const server = config.useSSL ? // Use SSL in production
     }, app)
     : createHttpServer(app);
 const io = new SocketIOServer(server, {
-    serveClient: false
+    serveClient: false,
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+    },
 });
-// TODO: configure socket.io events
-app.set('socketio', io); // currently no use
 
+// Setup socket
+applySocket(io);
 
 // Open mongoose connection and start the app
 mongoose.connect(config.mongo_url, {

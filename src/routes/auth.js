@@ -6,6 +6,7 @@ import crypto from 'crypto'
 
 import User from "../models/user"
 import AuthToken from "../models/authToken"
+import { disconnectByToken } from "../sockets/";
 
 const { BadRequest, Conflict, UnprocessableEntity, Unauthorized } = createError;
 
@@ -85,6 +86,7 @@ router.post("/login", wrap(async (req, res, next) => {
 router.post("/logout", authRequired, wrap(async (req, res, next) => {
     const [type, token, ...rest] = req.headers.authorization.split(' ');
     await AuthToken.deleteOne({ token });
+    disconnectByToken(token); // Disconnect all socket using this token.
     res.status(200).json({
         ok: true,
     });
