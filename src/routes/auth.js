@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import { wrap } from 'async-middleware'
 import crypto from 'crypto'
 
+import config from "../config"
 import User from "../models/user"
 import AuthToken from "../models/authToken"
 import { disconnectByToken } from "../sockets/";
@@ -66,6 +67,8 @@ router.post("/login", wrap(async (req, res, next) => {
     if (!req.body.username || !req.body.password)
         return next(BadRequest('Missing username or password field.'));
     const { username, password } = req.body;
+    if (username === config.AIUsername)
+        return next(Unauthorized('Incorrect username or password.'));
     const user = await User.findOne({ username: username });
     if (!user)
         return next(Unauthorized(`Incorrect username or password.`));

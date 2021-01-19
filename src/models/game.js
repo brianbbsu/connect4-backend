@@ -3,6 +3,8 @@ import _ from 'lodash'
 
 import { autoIncrement } from "./utils";
 import User from "./user"
+import { AIModel } from "../ai";
+import config from "../config"
 
 const Schema = mongoose.Schema;
 
@@ -146,6 +148,22 @@ GameSchema.statics.makeMove = async function (gameId, username, move) {
     return game.status;
 }
 
+GameSchema.statics.checkAI = async function (gameId) {
+    const game = await this.findById(gameId);
+    if (!game) return false;
+    if (game.status !== GAME_STATUS.ONGOING || game.currentPlayer !== config.AIUsername)
+        return false;
+    const pick = await AIModel.decide(game.moves);
+    const max = _.reduce(this.moves, (cur, { row, col }) => {
+        return col === pick && row > cur ? row : cur;
+    }, -1);
+    const AImove = {
+        col: pick,
+        row: max + 1,
+    };
+    const AIStatus = await this.makeMove(gameId, config.AIUsername, AImove);
+    return { AIStatus, AImove };
+}
 
 const Game = mongoose.model("Game", GameSchema);
 

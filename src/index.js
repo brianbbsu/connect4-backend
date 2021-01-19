@@ -10,6 +10,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose'
 
 import config from "./config"
+import { AIModel } from "./ai";
 import { applyRoute } from "./routes/"
 import { applySocket } from "./sockets/";
 
@@ -56,10 +57,12 @@ const db = mongoose.connection;
 db.on('error', error => console.log(error));
 db.once('open', () => {
     console.log('MongoDB connected');
-    server.listen(config.port, config.host, () => {
-        if (config.useSSL)
-            console.log(`HTTPS server is now listening on ${config.host}:${config.port}!`)
-        else
-            console.log(`HTTP server is now listening on ${config.host}:${config.port}!`)
-    });
+    AIModel.load().then(() => {
+        server.listen(config.port, config.host, () => {
+            if (config.useSSL)
+                console.log(`HTTPS server is now listening on ${config.host}:${config.port}!`)
+            else
+                console.log(`HTTP server is now listening on ${config.host}:${config.port}!`)
+        });
+    })
 });

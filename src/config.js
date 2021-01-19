@@ -10,6 +10,16 @@ if (!process.env.APP_SECRET) {
     process.exit(1);
 }
 
+if (!process.env.AI_USERNAME) {
+    console.error('Missing AI Username!!');
+    process.exit(1);
+}
+
+if (!process.env.AI_MODEL_PATH) {
+    console.error('Missing AI Model Path!!');
+    process.exit(1);
+}
+
 if (process.env.NODE_ENV === 'production') {
     if (!process.env.SSL_KEY || !process.env.SSL_CERT || !process.env.SSL_CA) {
         console.error('Missing path to ssl key, ssl cert, or ssl ca');
@@ -23,6 +33,9 @@ const config = {
     mongo_url: process.env.MONGO_URL,
     secret: process.env.APP_SECRET,
     
+    AIUsername: process.env.AI_USERNAME,
+    AIModelPath: process.env.AI_MODEL_PATH,
+
     useSSL: process.env.NODE_ENV === 'production',
     ssl_key: process.env.SSL_KEY || "",
     ssl_cert: process.env.SSL_CERT || "",

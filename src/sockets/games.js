@@ -1,7 +1,6 @@
 import SocketIO, { Socket } from 'socket.io'
-import { Error as MongooseError } from 'mongoose';
 
-import { authSocket, tokenTracker } from "./";
+import { authSocket, tokenTracker } from "./"
 import Game, { GAME_STATUS } from "../models/game"
 
 /**
@@ -33,6 +32,12 @@ export const applyGamesNS = (ns: SocketIO.Namespace) => {
             ns.to(socket.gameId).emit("newmove", {
                 move: move,
                 status: newStatus,
+            });
+            const { AIStatus, AImove } = await Game.checkAI(socket.gameId);
+            if (!AIStatus) return;
+            ns.to(socket.gameId).emit("newmove", {
+                move: AImove,
+                status: AIStatus,
             });
         });
 
