@@ -153,8 +153,9 @@ GameSchema.statics.checkAI = async function (gameId) {
     if (!game) return false;
     if (game.status !== GAME_STATUS.ONGOING || game.currentPlayer !== config.AIUsername)
         return false;
-    const pick = await AIModel.decide(game.moves);
-    const max = _.reduce(this.moves, (cur, { row, col }) => {
+    const AIPlayerNum = game.player1 === config.AIUsername ? 1 : 2;
+    const pick = await AIModel.decide(game.moves, AIPlayerNum);
+    const max = _.reduce(game.moves, (cur, { row, col }) => {
         return col === pick && row > cur ? row : cur;
     }, -1);
     const AImove = {
