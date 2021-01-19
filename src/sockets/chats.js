@@ -2,6 +2,7 @@ import SocketIO, { Socket } from 'socket.io'
 
 import { authSocket, tokenTracker } from "./";
 import Message from "../models/message"
+import Game from "../models/game"
 
 export const applyChatsNS = (ns: SocketIO.Namespace) => {
     ns.use(authSocket);
@@ -10,6 +11,12 @@ export const applyChatsNS = (ns: SocketIO.Namespace) => {
         socket.on('join', async (chatId: Number, callback: Function) => {
             if (socket.chatId !== undefined) // Shouldn't happen actually
                 socket.leave(socket.chatId);
+
+            // Check if the chat exists. Currently all chats belongs to games.
+            const game = await Game.findById(chatId);
+            if (!game)
+                return callback(null);
+
             socket.chatId = chatId;
             socket.join(socket.chatId);
             const messages = await Message.find({ chatId }).sort('createdAt');
@@ -17,7 +24,7 @@ export const applyChatsNS = (ns: SocketIO.Namespace) => {
         });
 
         socket.on('sendmsg', async (content: String) => {
-            if (socket.username === undefined || socket.chatId === undefined)
+            if (socket.username === undefined || socket.chatId === undefined || !content)
                 return;
             const message = await Message.create({
                 chatId: socket.chatId,
