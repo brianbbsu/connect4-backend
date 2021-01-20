@@ -61,6 +61,10 @@ GameSchema.virtual('currentPlayer').get(function () {
     return this.moves.length % 2 === 0 ? this.player1 : this.player2;
 });
 
+GameSchema.virtual('id').get(function () {
+    return this._id;
+});
+
 GameSchema.methods.isValidLocation = function (move) {
     if (!_.isInteger(move.col) || !_.isInteger(move.row) || !_.inRange(move.col, 0, 7) || !_.inRange(move.row, 0, 6))
         return false;

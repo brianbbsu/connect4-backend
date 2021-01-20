@@ -34,7 +34,7 @@ router.post("/register", wrap(async (req, res, next) => {
     const usernameRegex = /^[a-zA-Z0-9-_]{1,32}$/;
     const passwordMinLength = 6;
     if (!usernameRegex.test(username))
-        return next(UnprocessableEntity(`Username should match /${usernameRegex.source}/.`));
+        return next(UnprocessableEntity(`Username should match ${usernameRegex.source}.`));
     if (password.length < passwordMinLength)
         return next(UnprocessableEntity(`Password should be at least ${passwordMinLength} characters long`));
     

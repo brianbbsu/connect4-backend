@@ -2,6 +2,7 @@ import socketIO from 'socket.io'
 
 import { applyChatsNS } from "./chats";
 import { applyGamesNS } from "./games";
+import { applyPairNS } from "./pair";
 import AuthToken from "../models/authToken";
 
 // Auth middleware
@@ -52,4 +53,5 @@ export const disconnectByToken = (token: String) => {
 export const applySocket = (io: socketIO.Server) => {
     applyChatsNS(io.of("/chats"));
     applyGamesNS(io.of("/games"));
+    applyPairNS(io.of("/pair"));
 };
