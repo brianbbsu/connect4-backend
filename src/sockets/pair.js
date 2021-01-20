@@ -43,6 +43,6 @@ export const applyPairNS = (ns: SocketIO.Namespace) => {
                 currentWaitingPlayer = null;
         };
         socket.on('leave', removeFromQueue);
-        socket.on("disconnet", removeFromQueue);
+        socket.on("disconnect", removeFromQueue);
     });
 };
