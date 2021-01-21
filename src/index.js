@@ -20,7 +20,14 @@ app.set('x-powered-by', false); // For security
 
 // Setup middlewares
 app.use(morgan('tiny'));
-app.use(cors());
+if (process.env.NODE_ENV === 'production')
+    app.use(cors({
+        origin: config.frontendURL,
+        allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+        exposedHeaders: ['Content-Length', 'Content-Type'],
+    }));
+else
+    app.use(cors());
 app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 
