@@ -31,7 +31,7 @@ router.post("/register", wrap(async (req, res, next) => {
     if (!req.body.username || !req.body.password)
         return next(BadRequest('Missing username or password field.'));
     const { username, password } = req.body;
-    const usernameRegex = /^[a-zA-Z0-9-_]{1,32}$/;
+    const usernameRegex = /^[a-zA-Z0-9-_]{1,16}$/;
     const passwordMinLength = 6;
     if (!usernameRegex.test(username))
         return next(UnprocessableEntity(`Username should match ${usernameRegex.source}.`));

@@ -4,7 +4,7 @@ import _ from 'lodash'
 const Schema = mongoose.Schema;
 
 const UserSchema = Schema({
-    username: { // username should match /[a-zA-Z0-9-_]{1, 24}/
+    username: { // username should match /[a-zA-Z0-9-_]{1, 16}/
         type: String,
         unique: true,
         required: true,
