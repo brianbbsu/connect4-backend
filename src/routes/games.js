@@ -30,7 +30,7 @@ router.get('/', wrap(async (req, res, next) => {
 }));
 
 // TODO: Delete this. Only for testing purpose.
-router.post('/', wrap(async (req, res, next) => {
+/* router.post('/', wrap(async (req, res, next) => {
     if (!req.body.player1 || !req.body.player2)
         return next(BadRequest('Missing player1 or player2.'));
     const { player1, player2 } = req.body;
@@ -44,7 +44,7 @@ router.post('/', wrap(async (req, res, next) => {
         ok: true,
         gameId: game._id,
     });
-}));
+})); */
 
 router.get('/:id', wrap(async (req, res, next) => {
     const gameId = req.params.id;
