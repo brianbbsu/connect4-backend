@@ -45,7 +45,7 @@ const server = config.useSSL ? // Use SSL in production
 const io = new SocketIOServer(server, {
     serveClient: false,
     cors: {
-        origin: "*",
+        origin: (process.env.NODE_ENV === 'production' ? config.frontendURL : "*"),
         methods: ["GET", "POST"],
     },
 });
