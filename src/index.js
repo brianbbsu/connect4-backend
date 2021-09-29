@@ -54,12 +54,7 @@ const io = new SocketIOServer(server, {
 applySocket(io);
 
 // Open mongoose connection and start the app
-mongoose.connect(config.mongo_url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true,
-});
+mongoose.connect(config.mongo_url, {});
 const db = mongoose.connection;
 db.on('error', error => console.log(error));
 db.once('open', () => {
